@@ -19,7 +19,7 @@
             android:value="93" />
         <meta-data
             android:name="xposedscope"
-            android:value="com.milink.service"/>
+            android:resource="@array/xposed_scope"/>
     </application>
 
 </manifest>

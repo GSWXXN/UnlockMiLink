@@ -56,5 +56,19 @@ class HookEntry : IYukiHookXposedInit {
                 }
             }
         }
+
+        loadApp("com.xiaomi.mirror") {
+            findClass("com.xiaomi.mirror.display.DisplayManagerImpl").hook {
+                injectMember {
+                    method {
+                        name = "openDisplay"
+                        paramCount(3)
+                    }
+                    beforeHook {
+                        field { name = "MAX_SCREEN_COUNT" }.get().set(999)
+                    }
+                }
+            }
+        }
     }
 }
