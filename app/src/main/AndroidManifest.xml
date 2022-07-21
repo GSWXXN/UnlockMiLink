@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.gswxxn.unlockmilink">
+
+    <application
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        tools:ignore="MissingApplicationIcon">
+
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="让所有电脑均支持小米妙享的应用流转\n作者 酷安@迷璐" />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="93" />
+        <meta-data
+            android:name="xposedscope"
+            android:value="com.milink.service"/>
+    </application>
+
+</manifest>
