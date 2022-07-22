@@ -13,62 +13,7 @@ class HookEntry : IYukiHookXposedInit {
     }
 
     override fun onHook() = encase {
-        loadApp("com.milink.service") {
-            findClass("com.xiaomi.mirror.synergy.MiuiSynergySdk\$IRemoteDeviceListener").hook {
-                injectMember {
-                    method {
-                        name = "getListenManufacturer"
-                        emptyParam()
-                    }
-                    intercept()
-                }
-            }
-
-            findClass("com.xiaomi.mirror.synergy.MiuiSynergySdk").hook {
-                injectMember {
-                    method {
-                        name = "queryRemoteDevices"
-                        paramCount(3)
-                    }
-                    beforeHook {
-                        args(1).set(null)
-                    }
-                }
-            }
-
-            findClass("com.miui.circulate.api.protocol.miuiplus.MiuiPlusServiceController").hook {
-                injectMember {
-                    method {
-                        name = "isSupportSendApp"
-                        paramCount(1)
-                    }
-                    replaceToTrue()
-                }
-            }
-
-            findClass("com.xiaomi.mirror.RemoteDeviceInfo").hook {
-                injectMember {
-                    method {
-                        name = "isSupportSendApp"
-                        emptyParam()
-                    }
-                    replaceToTrue()
-                }
-            }
-        }
-
-        loadApp("com.xiaomi.mirror") {
-            findClass("com.xiaomi.mirror.display.DisplayManagerImpl").hook {
-                injectMember {
-                    method {
-                        name = "openDisplay"
-                        paramCount(3)
-                    }
-                    beforeHook {
-                        field { name = "MAX_SCREEN_COUNT" }.get().set(999)
-                    }
-                }
-            }
-        }
+        loadApp("com.milink.service", MiLinkHooker())
+        loadApp("com.xiaomi.mirror", MirrorHooker())
     }
 }
