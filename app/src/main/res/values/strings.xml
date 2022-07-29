@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">小米不妙·享</string>
+    <string name="device_type">替换本机设备类型</string>
+    <string name="android_pad">平板</string>
+    <string name="android_phone">手机</string>
+    <string name="default_type">默认</string>
+    <string name="dialog_title">提示</string>
+    <string name="dialog_confirm">确定</string>
+    <string name="dialog_content">您似乎未正确激活模块，请前往 LSPosed 中激活并勾选推荐作用域应用。</string>
+    <string name="before_using_tips">
+        \n使用前阅读
+        \n
+        \n第一次选择模式后将会申请 Root 权限用来自动停止作用域应用；如未授权 Root 权限，则需修改配置后手动重启作用域内应用
+        \n
+        \n当模式选择为：
+        \n- 默认，模块不会对设备类型进行修改；
+        \n- 手机，可以将本机类型作为手机接力到另一个类型为平板的设备上；
+        \n- 平板，可以将本机类型作为平板接收来自另一个设备类型为手机的接力；
+        \n
+        \n如果本机类型为平板，则需使用系统 "扫一扫" 应用扫描电脑端 MIUI+ 连接二维码。
+        \n
+        \n无论当前设备为哪种类型，都可以使用流转功能，将设备屏幕投屏至电脑 MIUI+ 上
+        \n
+        \n注意：流转与接力只能存在一个服务，如若同时使用，后创建的服务将会连接失败
+    </string>
 </resources>

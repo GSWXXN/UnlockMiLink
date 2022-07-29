@@ -1,5 +1,6 @@
 package com.gswxxn.unlockmilink.hook
 
+import com.gswxxn.unlockmilink.data.DataConst
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.type.android.BundleClass
 import de.robv.android.xposed.XC_MethodHook
@@ -17,6 +18,21 @@ class MirrorHooker : YukiBaseHooker() {
                 }
                 beforeHook {
                     field { name = "MAX_SCREEN_COUNT" }.get().set(999)
+                }
+            }
+        }
+
+        "$packageName.utils.DeviceUtils".hook {
+            injectMember {
+                method {
+                    name = "isPadDevice"
+                    emptyParam()
+                }
+                beforeHook {
+                    when (prefs.get(DataConst.deviceType)) {
+                        1 -> result = false
+                        2 -> result = true
+                    }
                 }
             }
         }
