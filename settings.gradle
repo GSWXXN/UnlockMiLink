@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "小米不妙·享"
 include ':app'
+include ':blockmiui'
