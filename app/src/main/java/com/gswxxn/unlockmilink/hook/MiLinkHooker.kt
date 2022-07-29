@@ -4,8 +4,9 @@ import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 
 class MiLinkHooker : YukiBaseHooker() {
     override fun onHook() {
+        val mirrorClass = "com.xiaomi.mirror"
 
-        "$packageName.synergy.MiuiSynergySdk\$IRemoteDeviceListener".hook {
+        "$mirrorClass.synergy.MiuiSynergySdk\$IRemoteDeviceListener".hook {
             injectMember {
                 method {
                     name = "getListenManufacturer"
@@ -15,7 +16,7 @@ class MiLinkHooker : YukiBaseHooker() {
             }
         }
 
-        "$packageName.synergy.MiuiSynergySdk".hook {
+        "$mirrorClass.synergy.MiuiSynergySdk".hook {
             injectMember {
                 method {
                     name = "queryRemoteDevices"
@@ -37,7 +38,7 @@ class MiLinkHooker : YukiBaseHooker() {
             }
         }
 
-        "$packageName.RemoteDeviceInfo".hook {
+        "$mirrorClass.RemoteDeviceInfo".hook {
             injectMember {
                 method {
                     name = "isSupportSendApp"
