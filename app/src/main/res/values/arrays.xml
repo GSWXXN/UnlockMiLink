@@ -3,5 +3,6 @@
     <string-array name="xposed_scope">
         <item>com.milink.service</item>
         <item>com.xiaomi.mirror</item>
+        <item>com.xiaomi.mi_connect_service</item>
     </string-array>
 </resources>
