@@ -32,7 +32,6 @@ class MiLinkHooker : YukiBaseHooker() {
             injectMember {
                 method {
                     name = "isSupportSendApp"
-                    paramCount(1)
                 }
                 replaceToTrue()
             }

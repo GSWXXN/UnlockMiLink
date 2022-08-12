@@ -3,6 +3,7 @@ package com.gswxxn.unlockmilink.hook
 import com.gswxxn.unlockmilink.data.DataConst
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.type.android.BundleClass
+import com.highcapable.yukihookapi.hook.type.android.ContextClass
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -36,9 +37,21 @@ class MirrorHooker : YukiBaseHooker() {
                 }
             }
         }
+
+        "$packageName.utils.SystemUtils".hook {
+            injectMember {
+                method {
+                    name = "isModelSupport"
+                    param(ContextClass)
+                }
+                replaceToTrue()
+            }
+        }
     }
 
     fun onXPEvent(lpparam : XC_LoadPackage.LoadPackageParam) {
+        val versionCode = XposedHelpers.getStaticIntField(XposedHelpers.findClass("${lpparam.packageName}.BuildConfig", lpparam.classLoader), "VERSION_CODE")
+        if (versionCode >= 30726) return
         XposedHelpers.findAndHookMethod("${lpparam.packageName}.activity.ScanQRCodeActivity", lpparam.classLoader, "onCreate", BundleClass, ChangeDeviceTypeHook(lpparam))
         XposedHelpers.findAndHookMethod("${lpparam.packageName}.connection.idm.IDMManager", lpparam.classLoader, "initIDMServer", ChangeDeviceTypeHook(lpparam))
         XposedHelpers.findAndHookMethod("${lpparam.packageName}.connection.idm.IDMManager", lpparam.classLoader, "reRegisterIDMServer", ChangeDeviceTypeHook(lpparam))
