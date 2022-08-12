@@ -37,6 +37,16 @@ class MiLinkHooker : YukiBaseHooker() {
             }
         }
 
+        "com.miui.circulate.world.permission.method.PermissionCheck\$BaseCheck".hook {
+            injectMember {
+                method {
+                    name = "check"
+                    emptyParam()
+                }
+                replaceToTrue()
+            }
+        }
+
         "$mirrorClass.RemoteDeviceInfo".hook {
             injectMember {
                 method {
