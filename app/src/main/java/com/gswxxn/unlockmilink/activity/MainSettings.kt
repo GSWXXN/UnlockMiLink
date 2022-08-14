@@ -28,6 +28,7 @@ class MainSettings : MIUIActivity() {
                             Shell.cmd(
                                 "pkill -f com.milink.service",
                                 "pkill -f com.xiaomi.mirror",
+                                "pkill -f com.xiaomi.mi_connect_service"
                             ).exec()
                         }
                     }

@@ -8,7 +8,7 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
-class MirrorHooker : YukiBaseHooker() {
+class MirrorHooker(private val deviceType : Int = 0) : YukiBaseHooker() {
     override fun onHook() {
 
         "$packageName.display.DisplayManagerImpl".hook {
@@ -30,7 +30,7 @@ class MirrorHooker : YukiBaseHooker() {
                     emptyParam()
                 }
                 beforeHook {
-                    when (prefs.get(DataConst.deviceType)) {
+                    when (deviceType) {
                         1 -> result = false
                         2 -> result = true
                     }

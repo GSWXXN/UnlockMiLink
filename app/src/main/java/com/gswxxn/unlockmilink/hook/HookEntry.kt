@@ -1,5 +1,6 @@
 package com.gswxxn.unlockmilink.hook
 
+import com.gswxxn.unlockmilink.data.DataConst
 import com.highcapable.yukihookapi.annotation.xposed.InjectYukiHookWithXposed
 import com.highcapable.yukihookapi.hook.factory.configs
 import com.highcapable.yukihookapi.hook.factory.encase
@@ -15,15 +16,20 @@ class HookEntry : IYukiHookXposedInit {
     }
 
     override fun onHook() = encase {
+        val deviceType = prefs.get(DataConst.deviceType)
+
         loadApp("com.xiaomi.mi_connect_service") {
             onAppLifecycle {
                 onCreate {
-                    "miui.os.Build".clazz.field { name = "IS_TABLET" }.get().set(true)
+                    when (deviceType) {
+                        1 -> "miui.os.Build".clazz.field { name = "IS_TABLET" }.get().set(false)
+                        2 -> "miui.os.Build".clazz.field { name = "IS_TABLET" }.get().set(true)
+                    }
                 }
             }
         }
         loadApp("com.milink.service", MiLinkHooker())
-        loadApp("com.xiaomi.mirror", MirrorHooker())
+        loadApp("com.xiaomi.mirror", MirrorHooker(deviceType))
     }
 
     override fun onXposedEvent() {
