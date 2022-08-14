@@ -1,6 +1,9 @@
 package com.gswxxn.unlockmilink.hook
 
-import com.gswxxn.unlockmilink.data.DataConst
+import android.content.Context
+import android.view.LayoutInflater
+import android.widget.FrameLayout
+import android.widget.ScrollView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.type.android.BundleClass
 import com.highcapable.yukihookapi.hook.type.android.ContextClass
@@ -45,6 +48,23 @@ class MirrorHooker(private val deviceType : Int = 0) : YukiBaseHooker() {
                     param(ContextClass)
                 }
                 replaceToTrue()
+            }
+        }
+
+        "$packageName.sinkpc.PcAppendView".hook {
+            injectMember {
+                method {
+                    name = "init"
+                    param(ContextClass)
+                }
+                beforeHook {
+                    val scrollView = ScrollView(appContext)
+                    instance<FrameLayout>().addView(scrollView)
+                    LayoutInflater.from(args(0).cast<Context>()).inflate(appResources.getIdentifier("pc_append_view", "layout", packageName), scrollView)
+                }
+                afterHook {
+                    instance<FrameLayout>().removeViewAt(1)
+                }
             }
         }
     }
