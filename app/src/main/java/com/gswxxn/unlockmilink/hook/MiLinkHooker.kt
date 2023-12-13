@@ -1,60 +1,46 @@
 package com.gswxxn.unlockmilink.hook
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.method
 
 class MiLinkHooker : YukiBaseHooker() {
     override fun onHook() {
         val mirrorClass = "com.xiaomi.mirror"
 
-        "$mirrorClass.synergy.MiuiSynergySdk\$IRemoteDeviceListener".hook {
-            injectMember {
-                method {
-                    name = "getListenManufacturer"
-                    emptyParam()
-                }
-                intercept()
+        "$mirrorClass.synergy.MiuiSynergySdk\$IRemoteDeviceListener".toClass().method {
+            name = "getListenManufacturer"
+            emptyParam()
+        }.hook {
+            intercept()
+        }
+
+        "$mirrorClass.synergy.MiuiSynergySdk".toClass().method {
+            name = "queryRemoteDevices"
+            paramCount(3)
+        }.hook {
+            before {
+                args(1).set(null)
             }
         }
 
-        "$mirrorClass.synergy.MiuiSynergySdk".hook {
-            injectMember {
-                method {
-                    name = "queryRemoteDevices"
-                    paramCount(3)
-                }
-                beforeHook {
-                    args(1).set(null)
-                }
-            }
+        "com.miui.circulate.api.protocol.miuiplus.MiuiPlusServiceController".toClass().method {
+            name = "isSupportSendApp"
+        }.hook {
+            replaceToTrue()
         }
 
-        "com.miui.circulate.api.protocol.miuiplus.MiuiPlusServiceController".hook {
-            injectMember {
-                method {
-                    name = "isSupportSendApp"
-                }
-                replaceToTrue()
-            }
+        "com.miui.circulate.world.permission.method.PermissionCheck\$BaseCheck".toClass().method {
+            name = "check"
+            emptyParam()
+        }.hook {
+            replaceToTrue()
         }
 
-        "com.miui.circulate.world.permission.method.PermissionCheck\$BaseCheck".hook {
-            injectMember {
-                method {
-                    name = "check"
-                    emptyParam()
-                }
-                replaceToTrue()
-            }
-        }
-
-        "$mirrorClass.RemoteDeviceInfo".hook {
-            injectMember {
-                method {
-                    name = "isSupportSendApp"
-                    emptyParam()
-                }
-                replaceToTrue()
-            }
+        "$mirrorClass.RemoteDeviceInfo".toClass().method {
+            name = "isSupportSendApp"
+            emptyParam()
+        }.hook {
+            replaceToTrue()
         }
     }
 }

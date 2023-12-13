@@ -11,7 +11,7 @@ import com.highcapable.yukihookapi.hook.xposed.proxy.IYukiHookXposedInit
 @InjectYukiHookWithXposed
 class HookEntry : IYukiHookXposedInit {
     override fun onInit() = configs {
-        debugTag = "UnlockMiLink"
+        debugLog { tag = "UnlockMIUICameraSnap" }
         isDebug = false
     }
 
@@ -22,8 +22,8 @@ class HookEntry : IYukiHookXposedInit {
             onAppLifecycle {
                 onCreate {
                     when (deviceType) {
-                        1 -> "miui.os.Build".clazz.field { name = "IS_TABLET" }.get().set(false)
-                        2 -> "miui.os.Build".clazz.field { name = "IS_TABLET" }.get().set(true)
+                        1 -> "miui.os.Build".toClass().field { name = "IS_TABLET" }.get().set(false)
+                        2 -> "miui.os.Build".toClass().field { name = "IS_TABLET" }.get().set(true)
                     }
                 }
             }
