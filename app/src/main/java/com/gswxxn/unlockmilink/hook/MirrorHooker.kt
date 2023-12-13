@@ -5,51 +5,46 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.ScrollView
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
+import com.gswxxn.unlockmilink.data.DataConst
+import com.gswxxn.unlockmilink.dexkit.base.BaseHookerWithDexKit
+import com.gswxxn.unlockmilink.dexkit.base.DexKitHelper.loadFinder
+import com.gswxxn.unlockmilink.dexkit.finder.MirrorFinder
+import com.gswxxn.unlockmilink.dexkit.member.MirrorMember
 import com.highcapable.yukihookapi.hook.type.android.BundleClass
-import com.highcapable.yukihookapi.hook.type.android.ContextClass
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import org.luckypray.dexkit.DexKitBridge
 
-class MirrorHooker(private val deviceType : Int = 0) : YukiBaseHooker() {
+object MirrorHooker: BaseHookerWithDexKit() {
+    override var storeMemberClass: Any? = MirrorMember
+    override fun onFindMembers(bridge: DexKitBridge) {
+        bridge.loadFinder(MirrorFinder)
+    }
+
     @SuppressLint("DiscouragedApi")
-    override fun onHook() {
+    override fun startHook() {
 
-        "$packageName.display.DisplayManagerImpl".toClass().method {
-            name = "openDisplay"
-            paramCount(3)
-        }.hook {
+        MirrorMember.DisplayManagerImpl_openDisplay.hook {
             before {
-                instance.current().field { name = "MAX_SCREEN_COUNT" }.set(999)
+                MirrorMember.MAX_SCREEN_COUNT.set(instance, 999)
             }
         }
 
-        "$packageName.utils.DeviceUtils".toClass().method {
-            name = "isPadDevice"
-            emptyParam()
-        }.hook {
+        MirrorMember.DeviceUtils_isPadDevice.hook {
             before {
-                when (deviceType) {
+                when (prefs.get(DataConst.deviceType)) {
                     1 -> result = false
                     2 -> result = true
                 }
             }
         }
 
-        "$packageName.utils.SystemUtils".toClass().method {
-            name = "isModelSupport"
-            param(ContextClass)
-        }.hook {
+        MirrorMember.SystemUtils_isModelSupport.hook {
             replaceToTrue()
         }
 
-        "$packageName.sinkpc.PcAppendView".toClass().method {
-            name = "init"
-            param(ContextClass)
-        }.hook {
+        MirrorMember.PcAppendView_init.hook {
             before {
                 val scrollView = ScrollView(appContext)
                 instance<FrameLayout>().addView(scrollView)
@@ -62,8 +57,7 @@ class MirrorHooker(private val deviceType : Int = 0) : YukiBaseHooker() {
     }
 
     fun onXPEvent(lpparam : XC_LoadPackage.LoadPackageParam) {
-        val versionCode = XposedHelpers.getStaticIntField(XposedHelpers.findClass("${lpparam.packageName}.BuildConfig", lpparam.classLoader), "VERSION_CODE")
-        if (versionCode >= 30726) return
+        if ((appVersionCode ?: Long.MAX_VALUE) >= 30726) return
         XposedHelpers.findAndHookMethod("${lpparam.packageName}.activity.ScanQRCodeActivity", lpparam.classLoader, "onCreate", BundleClass, ChangeDeviceTypeHook(lpparam))
         XposedHelpers.findAndHookMethod("${lpparam.packageName}.connection.idm.IDMManager", lpparam.classLoader, "initIDMServer", ChangeDeviceTypeHook(lpparam))
         XposedHelpers.findAndHookMethod("${lpparam.packageName}.connection.idm.IDMManager", lpparam.classLoader, "reRegisterIDMServer", ChangeDeviceTypeHook(lpparam))

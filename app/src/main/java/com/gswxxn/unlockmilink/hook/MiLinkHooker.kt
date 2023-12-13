@@ -1,10 +1,20 @@
 package com.gswxxn.unlockmilink.hook
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.gswxxn.unlockmilink.dexkit.finder.MiLinkFinder
+import com.gswxxn.unlockmilink.dexkit.base.BaseHookerWithDexKit
+import com.gswxxn.unlockmilink.dexkit.base.DexKitHelper.loadFinder
+import com.gswxxn.unlockmilink.dexkit.member.MiLinkMember
 import com.highcapable.yukihookapi.hook.factory.method
+import org.luckypray.dexkit.DexKitBridge
 
-class MiLinkHooker : YukiBaseHooker() {
-    override fun onHook() {
+object MiLinkHooker : BaseHookerWithDexKit() {
+    override var storeMemberClass: Any? = MiLinkMember
+
+    override fun onFindMembers(bridge: DexKitBridge) {
+        bridge.loadFinder(MiLinkFinder)
+    }
+
+    override fun startHook() {
         val mirrorClass = "com.xiaomi.mirror"
 
         "$mirrorClass.synergy.MiuiSynergySdk\$IRemoteDeviceListener".toClass().method {
@@ -23,16 +33,13 @@ class MiLinkHooker : YukiBaseHooker() {
             }
         }
 
-        "com.miui.circulate.api.protocol.miuiplus.MiuiPlusServiceController".toClass().method {
-            name = "isSupportSendApp"
-        }.hook {
+        // 允许流转所有应用
+        MiLinkMember.MiuiPlusServiceController_isSupportSendApp.hook {
             replaceToTrue()
         }
 
-        "com.miui.circulate.world.permission.method.PermissionCheck\$BaseCheck".toClass().method {
-            name = "check"
-            emptyParam()
-        }.hook {
+        // 忽略检查miui版本, 跨屏协同服务版本, 小米互联通信服务版本
+        MiLinkMember.PermissionCheck_Check.hook {
             replaceToTrue()
         }
 

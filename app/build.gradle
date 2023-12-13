@@ -42,5 +42,6 @@ dependencies {
     ksp 'com.highcapable.yukihookapi:ksp-xposed:1.2.0'
     implementation "com.github.topjohnwu.libsu:core:5.1.0"
     implementation 'androidx.annotation:annotation:1.7.0'
+    implementation 'org.luckypray:dexkit:2.0.0'
     implementation project(':blockmiui')
 }

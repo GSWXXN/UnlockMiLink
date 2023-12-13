@@ -11,31 +11,29 @@ import com.highcapable.yukihookapi.hook.xposed.proxy.IYukiHookXposedInit
 @InjectYukiHookWithXposed
 class HookEntry : IYukiHookXposedInit {
     override fun onInit() = configs {
-        debugLog { tag = "UnlockMIUICameraSnap" }
+        debugLog { tag = "UnlockMiLink" }
         isDebug = false
     }
 
     override fun onHook() = encase {
-        val deviceType = prefs.get(DataConst.deviceType)
-
         loadApp("com.xiaomi.mi_connect_service") {
             onAppLifecycle {
                 onCreate {
-                    when (deviceType) {
+                    when (prefs.get(DataConst.deviceType)) {
                         1 -> "miui.os.Build".toClass().field { name = "IS_TABLET" }.get().set(false)
                         2 -> "miui.os.Build".toClass().field { name = "IS_TABLET" }.get().set(true)
                     }
                 }
             }
         }
-        loadApp("com.milink.service", MiLinkHooker())
-        loadApp("com.xiaomi.mirror", MirrorHooker(deviceType))
+        loadApp("com.milink.service", MiLinkHooker)
+        loadApp("com.xiaomi.mirror", MirrorHooker)
     }
 
     override fun onXposedEvent() {
         YukiXposedEvent.events {
             onHandleLoadPackage {
-                if ("com.xiaomi.mirror" == it.packageName) MirrorHooker().onXPEvent(it)
+                if ("com.xiaomi.mirror" == it.packageName) MirrorHooker.onXPEvent(it)
             }
         }
     }
